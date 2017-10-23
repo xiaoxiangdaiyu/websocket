@@ -4,7 +4,9 @@
   "description": "chartroom  with websocket",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server":"node ./src/websocket/server.js",
+    "client":"gulp demo"
   },
   "repository": {
     "type": "git",
