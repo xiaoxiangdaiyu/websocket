@@ -9,6 +9,7 @@ function queryAll(selecter){
 }
 // Connection opened
 socket.addEventListener('open', function (event) {
+    console.log('握手成功')
     socket.send(JSON.stringify({
         event:'join',
         data:{
