@@ -10,24 +10,18 @@ function queryAll(selecter){
 // Connection opened
 socket.onopen = function (event) {
     console.log('握手成功')
-    socket.send(JSON.stringify({
-        event:'join',
-        data:{
-            id:id,
-            name:'user'+id
-        }
-    }));
+    socket.send('测试一下');
 };
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log('Message from server', event.data);
-    var data = JSON.parse(event.data)
-    if(data.id && data.id == id){
-        render(data)
-    }else{
-        query('.show').innerHTML = data
-    }
+    console.log('Message from server', event.data.toString());
+    // var data = JSON.parse(event.data)
+    // if(data.id && data.id == id){
+    //     render(data) 
+    // }else{
+    //     query('.show').innerHTML = data
+    // }
 });
 function render(data){
     this.num.innerHTML = data.nums
