@@ -8,7 +8,7 @@ function queryAll(selecter){
     return document.querySelectorAll(selecter)
 }
 // Connection opened
-socket.addEventListener('open', function (event) {
+socket.onopen = function (event) {
     console.log('握手成功')
     socket.send(JSON.stringify({
         event:'join',
@@ -17,7 +17,7 @@ socket.addEventListener('open', function (event) {
             name:'user'+id
         }
     }));
-});
+};
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
