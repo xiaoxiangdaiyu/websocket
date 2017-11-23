@@ -13,6 +13,7 @@ server.on('connection',()=>{
 server.on('close',()=>{
     console.log('server will close');
 });
-//关闭服务为了触发close事件
+//关闭服务为了触发close事件  
+
 server.close();
 server.listen(8080);
