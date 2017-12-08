@@ -70,10 +70,10 @@ function encodeFrame(data){
         // 2的64位
         payload_len = len > 65535 ?10:(len > 125 ? 4 : 2),
         buf = new Buffer(len+payload_len)
-    //10000010 已经结束并使用掩码处理 
-    buf[0] = 0x81       
+    //10000001 txt文本已经结束并未使用掩码处理 
+    buf[0] = 0x81          
     if(payload_len == 2){
-        buf[1] = payload_len
+        buf[1] = len
     }else if(payload_len == 4){
         buf[1] = 126;
         buf.writeUInt16BE(payload_len, 2);
@@ -95,9 +95,7 @@ function handShake(socket, headers) {
     socket.write('HTTP/1.1 101 Switching Protocols\r\n');
     socket.write('Upgrade: websocket\r\n');
     socket.write('Connection: Upgrade\r\n');
-    //这个字段带上服务器处理后的KEY  
     socket.write('Sec-WebSocket-Accept: ' + resSWKey + '\r\n');
-    //输出空行，使HTTP头结束  
     socket.write('\r\n');
 }
 
@@ -131,4 +129,4 @@ server.on('connection', function (sock) {
     })
 })
 
-server.listen(8080)
+server.listen(8081)
