@@ -29,7 +29,7 @@ var utils = {
 // 解析接受的数据帧
 function decodeFrame(buffer) {
     /**
-     * >>> 7 右移操作，即字节右移7位，目的是为了即只取第一字节的值
+     * >>> 7 右移操作，即字节右移7位，目的是为了即只取第一位的值
      * 10010030  ====>   00000001
      * & 按位与  同1为1    
      * 15二进制表示为：00001111  ,运算之后前四位即为0，得到后四位的值
@@ -37,21 +37,39 @@ function decodeFrame(buffer) {
      *  
      */
     var fBite = buffer[0],
+        /**
+         * 获取Fin的值，
+         * 1传输结束
+         * 0 继续监听 
+         */
         Fin = fBite >>> 7,
+        /**
+         * 获取opcode的值，opcode为fBite的4-7位
+         * & 按位与  同1为1    
+         * 15二进制表示为：00001111  ,运算之后前四位即为0，得到后四位的值
+         */
         opcode = buffer[0] & 15,
+        /**
+         * 获取有效数据长度 
+         */
         len = buffer[1] & 127,
+        // 是否进行掩码处理，客户端请求必须为1
         Mask = buffer[1] >>> 7,
         maskKey = null
     // 获取数据长度
-    //读取后面16位，即2-3字节
+    //真实长度大于125，读取后面2字节
     if (len == 126) {
         len = buffer.readUInt16BE(2)
     } else if (len == 127) {
-        // 读取后面64位，即2-9字节
+        // 真实长度大于65535，读取后面8字节
         len = buffer.readUInt64BE(2)
     }
     // 判断是否进行掩码处理
     Mask && (maskKey = buffer.slice(2,5))
+    /**
+     * 反掩码处理 
+     * 循环遍历加密的字节（octets，text数据的单位）并且将其与第（i%4）位掩码字节(即i除以4取余)进行异或运算
+     */
     if(Mask){
         for (var i = 2;i<len ;i++){
             buffer[i] = maskKey[(i - 2) % 4] ^ buffer[i];
@@ -70,8 +88,15 @@ function encodeFrame(data){
         // 2的64位
         payload_len = len > 65535 ?10:(len > 125 ? 4 : 2),
         buf = new Buffer(len+payload_len)
-    //10000001 txt文本已经结束并未使用掩码处理 
-    buf[0] = 0x81          
+    /**
+     * 首个字节，0x81 = 10000001 
+     *对应的Fin 为1 opcode为001 mask 为0 
+     * 即表明 返回数据为txt文本已经结束并未使用掩码处理
+     */
+    buf[0] = 0x81  
+    /**
+     * 根据真实数据长度设置payload_len位
+     */        
     if(payload_len == 2){
         buf[1] = len
     }else if(payload_len == 4){
@@ -85,6 +110,7 @@ function encodeFrame(data){
     buf.write(data, payload_len);
     return buf;
 }
+// 
 function getAccpectKey(rSWKey) {
     return crypto.createHash('sha1').update(rSWKey + ws_key).digest('base64')
 }
@@ -114,9 +140,14 @@ server.on('connection', function (sock) {
                     // ping请求
                     if(opcode == 9){
                         console.log("ping相应");
+                        /**
+                         * ping pong最大长度为125，所以可以直接拼接
+                         * 前两位数据为10001010+数据长度
+                         * 即传输完毕的pong响应，数据肯定小于125
+                         */
                         socke.write(Buffer.concat([new Buffer([0x8A, data.length]), data]))
                     }
-                    var datas = '接收到:';
+                    var datas = '收到数据';
                     datas = encodeFrame(datas)   
                     sock.write(datas)
                 }   

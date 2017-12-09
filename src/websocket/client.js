@@ -10,7 +10,7 @@ function queryAll(selecter){
 // Connection opened
 socket.onopen = function (event) {
     console.log('握手成功')
-    socket.send('测试一下');
+    socket.send('test');
 };
 
 // Listen for messages
