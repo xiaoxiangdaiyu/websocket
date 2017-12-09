@@ -251,7 +251,7 @@ if(opcode == 9){
 ```  
 
 ## 结束语 
-至此，一个websocket服务器的简单实现就完成了。当然成熟的websocket库处理各种情况是比较完善的，更推荐大家使用，这里只是简单实践，更多的是满足一下自己的好奇心，知其然，也要知其所以然，希望大家共同学习和进步
+至此，一个websocket服务器的简单实现就完成了[更多细节请查看](https://github.com/xiaoxiangdaiyu/chartroom/blob/master/src/websocket/ws.js)。当然成熟的websocket库处理各种情况是比较完善的，更推荐大家使用，这里只是简单实践，更多的是满足一下自己的好奇心，知其然，也要知其所以然，希望大家共同学习和进步
 ## 参考文章  
 [细说WebSocket - Node篇](http://www.cnblogs.com/hustskyking/p/websocket-with-node.html)
 [WebSocket - 初入探究 与 实现](http://www.jianshu.com/p/e9b86589f6aa)
