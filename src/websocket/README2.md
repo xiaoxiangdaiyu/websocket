@@ -18,7 +18,7 @@
 
 客户端的握手请求是一个标准的HTTP请求，大概像下面的例子。   
  
-```  
+```js  
 GET / HTTP/1.1  //HTTP版本必须1.1及以上，请求方式为GET
 Host: localhost:8081 //本地项目
 Connection: Upgrade 
@@ -66,7 +66,7 @@ Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
 Sec-WebSocket-Key 和"258EAFA5-E914-47DA-95CA-C5AB0DC85B11"链接，通过SHA-1 hash获得结果，然后返回该结果的base64编码。
 代码如下：
 
-```  
+```js  
 // 指定拼接字符
 var ws_key = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 // 生成相应key
@@ -139,7 +139,7 @@ function handShake(socket, headers) {
 
 直接看代码应该更加直接。    
 
-```
+```js
 // 解析接受的数据帧
 function decodeFrame(buffer) {
     /**
@@ -202,7 +202,7 @@ function decodeFrame(buffer) {
 处理完接收到的数据之后，下面就是发送响应了。 
 响应数据不需要进行掩码运算，只需要根据帧的格式(即上面的帧)，将数据进行组装就好
 
-```
+```js
 // 加密发送数据
 function encodeFrame(data){
     var len = Buffer.byteLength(data),
@@ -237,7 +237,7 @@ function encodeFrame(data){
 当收到opcode 为 9时即ping请求，直接返回具有完全相同有效数据的pong即可。
 Pings的opcode为0x9，pong是0xA，所以可以直接如下   
 
-```
+```js
 // ping请求
 if(opcode == 9){
    console.log("ping相应");
